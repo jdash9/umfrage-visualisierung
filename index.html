@@ -62,19 +62,6 @@
       margin-top: 0;
     }
 
-    p {
-      margin-bottom: 12px;
-    }
-
-    ul {
-      padding-left: 20px;
-      margin-bottom: 0;
-    }
-
-    li {
-      margin-bottom: 8px;
-    }
-
     .small {
       color: #666;
       font-size: 0.95rem;
@@ -85,9 +72,9 @@
   <div class="container">
     <h1>Zusammenhänge in der Umfrage zur Mediennutzung</h1>
     <p class="intro">
-      Diese Auswertung zeigt nicht nur einzelne Ergebnisse, sondern vergleicht verschiedene Merkmale miteinander.
-      So lassen sich mögliche Zusammenhänge in den Antworten besser erkennen.
-      Die Diagramme beziehen sich jeweils nur auf Personen, die beide betroffenen Fragen beantwortet haben.
+      Diese Auswertung vergleicht verschiedene Merkmale der Befragten miteinander.
+      Die Diagramme zeigen jeweils prozentuale Verteilungen, damit Unterschiede zwischen den Gruppen besser erkennbar sind.
+      Berücksichtigt wurden immer nur die Personen, die beide jeweiligen Fragen beantwortet haben.
     </p>
 
     <div class="grid">
@@ -97,7 +84,7 @@
           <canvas id="chart1"></canvas>
         </div>
         <p class="small">
-          Vergleich der Altersgruppen danach, ob für Mediennutzung bezahlt wird.
+          Prozentualer Vergleich der Altersgruppen danach, ob für Mediennutzung bezahlt wird.
         </p>
       </div>
 
@@ -107,7 +94,7 @@
           <canvas id="chart2"></canvas>
         </div>
         <p class="small">
-          Vergleich der Geschlechter danach, ob für Mediennutzung bezahlt wird.
+          Prozentualer Vergleich der Geschlechter danach, ob für Mediennutzung bezahlt wird.
         </p>
       </div>
 
@@ -117,7 +104,7 @@
           <canvas id="chart3"></canvas>
         </div>
         <p class="small">
-          Vergleich der Altersgruppen danach, ob die eigene Mediennutzung als abhängig wahrgenommen wird.
+          Prozentualer Vergleich der Altersgruppen danach, ob die eigene Mediennutzung als abhängig wahrgenommen wird.
         </p>
       </div>
     </div>
@@ -125,31 +112,48 @@
     <div class="note">
       <h2>Kurzinterpretation</h2>
       <p>
-        Im ersten Diagramm zeigt sich, dass in der Altersgruppe von 18 bis 24 Jahren mehr Personen keine bezahlten Medien nutzen,
-        während in der Gruppe von 25 bis 34 Jahren eher mehr Personen dafür bezahlen.
-        Das deutet auf einen möglichen Zusammenhang zwischen Alter und Zahlungsbereitschaft hin.
+        Die prozentuale Darstellung zeigt deutlicher als absolute Zahlen, wie sich die Antworten innerhalb der einzelnen Gruppen verteilen.
+        Bei der bezahlten Mediennutzung ist besonders sichtbar, dass in der Altersgruppe von 25 bis 34 Jahren ein größerer Anteil angibt, dafür zu bezahlen.
       </p>
       <p>
-        Beim Vergleich von Geschlecht und bezahlter Mediennutzung ist zu erkennen, dass männliche Teilnehmende in dieser Stichprobe etwas häufiger
-        für Medien bezahlen als weibliche Teilnehmende.
-        Gleichzeitig ist der Unterschied nicht extrem groß und sollte daher vorsichtig interpretiert werden.
+        In der Altersgruppe von 18 bis 24 Jahren ist die Verteilung deutlich ausgeglichener beziehungsweise leicht in Richtung „Nein“ verschoben.
+        Bei der Einschätzung der eigenen Medienabhängigkeit zeigt sich außerdem, dass jüngere Teilnehmende häufiger mit „Ja“ antworten als ältere.
       </p>
       <p>
-        Im dritten Diagramm fällt auf, dass sich besonders in der Gruppe von 18 bis 24 Jahren vergleichsweise viele Personen
-        als abhängig von Medien einschätzen.
-        In der Gruppe von 25 bis 34 Jahren überwiegen dagegen die Antworten, die keine Abhängigkeit sehen.
-      </p>
-      <p>
-        Insgesamt lassen sich also erste Tendenzen erkennen.
-        Wegen der teilweise kleinen Fallzahlen und fehlenden Antworten sind die Ergebnisse jedoch eher als Hinweis
-        und nicht als allgemeingültiger Beweis zu verstehen.
+        Die Ergebnisse geben Hinweise auf mögliche Zusammenhänge, sollten wegen der begrenzten Stichprobe aber vorsichtig interpretiert werden.
       </p>
     </div>
   </div>
 
   <script>
+    const COLOR_YES = 'rgba(34, 94, 60, 0.85)';
+    const COLOR_NO = 'rgba(107, 114, 128, 0.85)';
+    const BORDER_YES = 'rgba(34, 94, 60, 1)';
+    const BORDER_NO = 'rgba(107, 114, 128, 1)';
+
+    function percent(yes, no) {
+      const total = yes + no;
+      if (total === 0) return [0, 0];
+      return [
+        Number(((yes / total) * 100).toFixed(1)),
+        Number(((no / total) * 100).toFixed(1))
+      ];
+    }
+
     // Diagramm 1: Alter x bezahlt für Medien
-    const ageLabels1 = ['18 - 24', '25 - 34', 'unter 18', '35 - 44', '55 - 64', 'keine Angabe'];
+    const ageLabels1 = ['18–24', '25–34', 'unter 18', '35–44', '55–64', 'keine Angabe'];
+
+    const agePayRaw = [
+      { yes: 9, no: 13 },
+      { yes: 11, no: 5 },
+      { yes: 1, no: 1 },
+      { yes: 0, no: 1 },
+      { yes: 3, no: 0 },
+      { yes: 0, no: 1 }
+    ];
+
+    const agePayYes = agePayRaw.map(group => percent(group.yes, group.no)[0]);
+    const agePayNo = agePayRaw.map(group => percent(group.yes, group.no)[1]);
 
     new Chart(document.getElementById('chart1'), {
       type: 'bar',
@@ -157,13 +161,17 @@
         labels: ageLabels1,
         datasets: [
           {
-            label: 'Ja',
-            data: [9, 11, 1, 0, 3, 0],
+            label: 'Ja (%)',
+            data: agePayYes,
+            backgroundColor: COLOR_YES,
+            borderColor: BORDER_YES,
             borderWidth: 1
           },
           {
-            label: 'Nein',
-            data: [13, 5, 1, 1, 0, 1],
+            label: 'Nein (%)',
+            data: agePayNo,
+            backgroundColor: COLOR_NO,
+            borderColor: BORDER_NO,
             borderWidth: 1
           }
         ]
@@ -172,10 +180,17 @@
         responsive: true,
         maintainAspectRatio: false,
         scales: {
+          x: {
+            stacked: true
+          },
           y: {
+            stacked: true,
             beginAtZero: true,
+            max: 100,
             ticks: {
-              precision: 0
+              callback: function(value) {
+                return value + '%';
+              }
             }
           }
         }
@@ -185,19 +200,32 @@
     // Diagramm 2: Geschlecht x bezahlt für Medien
     const genderLabels = ['männlich', 'weiblich', 'keine Angabe'];
 
+    const genderPayRaw = [
+      { yes: 18, no: 12 },
+      { yes: 6, no: 8 },
+      { yes: 0, no: 1 }
+    ];
+
+    const genderPayYes = genderPayRaw.map(group => percent(group.yes, group.no)[0]);
+    const genderPayNo = genderPayRaw.map(group => percent(group.yes, group.no)[1]);
+
     new Chart(document.getElementById('chart2'), {
       type: 'bar',
       data: {
         labels: genderLabels,
         datasets: [
           {
-            label: 'Ja',
-            data: [18, 6, 0],
+            label: 'Ja (%)',
+            data: genderPayYes,
+            backgroundColor: COLOR_YES,
+            borderColor: BORDER_YES,
             borderWidth: 1
           },
           {
-            label: 'Nein',
-            data: [12, 8, 1],
+            label: 'Nein (%)',
+            data: genderPayNo,
+            backgroundColor: COLOR_NO,
+            borderColor: BORDER_NO,
             borderWidth: 1
           }
         ]
@@ -206,10 +234,17 @@
         responsive: true,
         maintainAspectRatio: false,
         scales: {
+          x: {
+            stacked: true
+          },
           y: {
+            stacked: true,
             beginAtZero: true,
+            max: 100,
             ticks: {
-              precision: 0
+              callback: function(value) {
+                return value + '%';
+              }
             }
           }
         }
@@ -217,7 +252,19 @@
     });
 
     // Diagramm 3: Alter x gefühlte Abhängigkeit
-    const ageLabels3 = ['18 - 24', '25 - 34', 'unter 18', '35 - 44', '55 - 64', 'keine Angabe'];
+    const ageLabels3 = ['18–24', '25–34', 'unter 18', '35–44', '55–64', 'keine Angabe'];
+
+    const ageDependencyRaw = [
+      { yes: 11, no: 11 },
+      { yes: 4, no: 12 },
+      { yes: 1, no: 1 },
+      { yes: 1, no: 0 },
+      { yes: 0, no: 3 },
+      { yes: 0, no: 1 }
+    ];
+
+    const ageDependencyYes = ageDependencyRaw.map(group => percent(group.yes, group.no)[0]);
+    const ageDependencyNo = ageDependencyRaw.map(group => percent(group.yes, group.no)[1]);
 
     new Chart(document.getElementById('chart3'), {
       type: 'bar',
@@ -225,13 +272,17 @@
         labels: ageLabels3,
         datasets: [
           {
-            label: 'Ja',
-            data: [11, 4, 1, 1, 0, 0],
+            label: 'Ja (%)',
+            data: ageDependencyYes,
+            backgroundColor: COLOR_YES,
+            borderColor: BORDER_YES,
             borderWidth: 1
           },
           {
-            label: 'Nein',
-            data: [11, 12, 1, 0, 3, 1],
+            label: 'Nein (%)',
+            data: ageDependencyNo,
+            backgroundColor: COLOR_NO,
+            borderColor: BORDER_NO,
             borderWidth: 1
           }
         ]
@@ -240,10 +291,17 @@
         responsive: true,
         maintainAspectRatio: false,
         scales: {
+          x: {
+            stacked: true
+          },
           y: {
+            stacked: true,
             beginAtZero: true,
+            max: 100,
             ticks: {
-              precision: 0
+              callback: function(value) {
+                return value + '%';
+              }
             }
           }
         }
