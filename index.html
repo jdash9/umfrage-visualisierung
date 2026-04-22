@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Umfrage-Ergebnisse</title>
+  <title>Umfrage zur Mediennutzung</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
@@ -15,7 +15,7 @@
     }
 
     .container {
-      max-width: 1000px;
+      max-width: 1100px;
       margin: 0 auto;
     }
 
@@ -23,10 +23,11 @@
       margin-bottom: 8px;
     }
 
-    p.intro {
+    .intro {
       margin-top: 0;
       margin-bottom: 24px;
       color: #555;
+      line-height: 1.5;
     }
 
     .grid {
@@ -44,7 +45,7 @@
 
     .chart-wrap {
       position: relative;
-      height: 300px;
+      height: 320px;
     }
 
     .note {
@@ -53,34 +54,50 @@
       border-radius: 14px;
       padding: 18px;
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      line-height: 1.6;
     }
 
-    code {
-      background: #eee;
-      padding: 2px 6px;
-      border-radius: 6px;
+    h2 {
+      font-size: 1.1rem;
+      margin-top: 0;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 8px;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Ergebnisse der Umfrage</h1>
+    <h1>Ergebnisse der Umfrage zur Mediennutzung</h1>
     <p class="intro">
-      Hier werden die wichtigsten Ergebnisse der Online-Umfrage auf einen Blick dargestellt.
+      Diese Website zeigt ausgewählte Ergebnisse einer Umfrage zur Mediennutzung.
+      Dargestellt werden einige zentrale Merkmale der Teilnehmenden sowie ihr Umgang mit Medien.
     </p>
 
     <div class="grid">
       <div class="card">
-        <h2>Frage 1: Beispiel</h2>
+        <h2>Geschlecht der Teilnehmenden</h2>
         <div class="chart-wrap">
           <canvas id="chart1"></canvas>
         </div>
       </div>
 
       <div class="card">
-        <h2>Frage 2: Beispiel</h2>
+        <h2>Bezahlen für Mediennutzung</h2>
         <div class="chart-wrap">
           <canvas id="chart2"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Welchen Medien wird am meisten vertraut?</h2>
+        <div class="chart-wrap">
+          <canvas id="chart3"></canvas>
         </div>
       </div>
     </div>
@@ -88,20 +105,21 @@
     <div class="note">
       <h2>Kurzinterpretation</h2>
       <p>
-        Hier kannst du später 3 bis 5 Sätze zu den Ergebnissen schreiben. Zum Beispiel:
-        Die meisten Teilnehmenden haben Antwort A gewählt. Antwort C war deutlich seltener.
-        Daraus lässt sich erkennen, dass ...
+        Die Auswertung zeigt, dass unter den beantworteten Angaben mehr männliche als weibliche Teilnehmende vertreten sind.
+        Beim Thema bezahlte Mediennutzung ist das Bild vergleichsweise ausgeglichen, wobei kostenpflichtige Medien leicht häufiger genannt wurden.
+        Beim Vertrauen in Medien wurden besonders soziale Medien, Zeitungen und TV-Medien genannt.
       </p>
       <p>
-        Du musst im JavaScript unten nur die <code>labels</code> und <code>data</code> durch deine echten Werte ersetzen.
+        Auffällig ist außerdem, dass nicht alle Fragen von allen Personen beantwortet wurden.
+        Deshalb beziehen sich die Diagramme jeweils nur auf die vorhandenen Antworten in der Tabelle.
       </p>
     </div>
   </div>
 
   <script>
-    // Beispiel-Daten für Diagramm 1
-    const labels1 = ['Ja', 'Nein', 'Vielleicht'];
-    const data1 = [12, 5, 8];
+    // Diagramm 1: Geschlecht
+    const labels1 = ['männlich', 'weiblich'];
+    const data1 = [30, 14];
 
     new Chart(document.getElementById('chart1'), {
       type: 'bar',
@@ -116,6 +134,11 @@
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
         scales: {
           y: {
             beginAtZero: true,
@@ -127,22 +150,55 @@
       }
     });
 
-    // Beispiel-Daten für Diagramm 2
-    const labels2 = ['Sehr gut', 'Gut', 'Mittel', 'Schlecht'];
-    const data2 = [4, 10, 6, 2];
+    // Diagramm 2: Bezahlt man für Medien?
+    const labels2 = ['Ja', 'Nein'];
+    const data2 = [24, 21];
 
     new Chart(document.getElementById('chart2'), {
       type: 'pie',
       data: {
         labels: labels2,
         datasets: [{
-          label: 'Bewertung',
+          label: 'Bezahlte Mediennutzung',
           data: data2
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false
+      }
+    });
+
+    // Diagramm 3: Vertrauen in Medien
+    const labels3 = ['Soziale Medien', 'Zeitung', 'TV Medien', 'Radio', 'Sonstige Einzelantworten'];
+    const data3 = [14, 11, 8, 3, 7];
+
+    new Chart(document.getElementById('chart3'), {
+      type: 'bar',
+      data: {
+        labels: labels3,
+        datasets: [{
+          label: 'Anzahl Antworten',
+          data: data3,
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              precision: 0
+            }
+          }
+        }
       }
     });
   </script>
