@@ -141,7 +141,7 @@
       font-size: 0.95rem;
     }
 
-    details.info-box {
+    .info-box {
       margin-bottom: 18px;
       background: var(--surface-2);
       border: 1px solid var(--border);
@@ -151,28 +151,45 @@
       box-shadow: var(--shadow);
     }
 
-    details.info-box summary {
+    .info-toggle {
+      width: 100%;
+      text-align: left;
       cursor: pointer;
-      list-style: none;
+      border: none;
+      background: transparent;
+      color: var(--text);
       padding: 16px 18px;
       font-weight: 700;
+      font-size: 1rem;
     }
 
-    details.info-box summary::-webkit-details-marker {
-      display: none;
+    .info-toggle::after {
+      content: '▾';
+      float: right;
+      transition: transform 0.25s ease;
+    }
+
+    .info-toggle.active::after {
+      transform: rotate(180deg);
     }
 
     .info-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .info-inner {
       padding: 0 18px 16px 18px;
     }
 
-    .info-content ul {
+    .info-inner ul {
       margin: 0;
       padding-left: 18px;
       line-height: 1.55;
     }
 
-    .info-content li {
+    .info-inner li {
       margin-bottom: 8px;
     }
 
@@ -266,17 +283,21 @@
       </div>
     </div>
 
-    <details class="info-box">
-      <summary>Hinweise zur Interpretation anzeigen</summary>
-      <div class="info-content">
-        <ul>
-          <li>Die Darstellung zeigt Prozentwerte innerhalb der jeweils ausgewählten Gruppen. Dadurch lassen sich Unterschiede zwischen diesen besser vergleichen, auch wenn sie unterschiedlich groß sind.</li>
-          <li>Beim Überfahren der Balken mit der Maus werden zusätzlich die absoluten Fallzahlen angezeigt. So lässt sich besser einschätzen, wie belastbar ein auffälliger Prozentwert wirklich ist.</li>
-          <li>Besonders kleine Gruppen, zum Beispiel einzelne Alters- oder Statuskategorien, können schnell sehr hohe oder sehr niedrige Prozentwerte erzeugen. Solche Ergebnisse sollten daher eher vorsichtig gelesen werden.</li>
-          <li>Die Auswertung eignet sich vor allem dazu, erste Tendenzen und mögliche Zusammenhänge in den Antworten sichtbar zu machen, nicht unbedingt für allgemeingültige Aussagen.</li>
-        </ul>
+    <div class="info-box">
+      <button id="infoToggle" class="info-toggle" type="button" aria-expanded="false">
+        Hinweise zur Interpretation anzeigen
+      </button>
+      <div id="infoContent" class="info-content">
+        <div class="info-inner">
+          <ul>
+            <li>Die Darstellung zeigt Prozentwerte innerhalb der jeweils ausgewählten Gruppen. Dadurch lassen sich Unterschiede zwischen diesen besser vergleichen, auch wenn sie unterschiedlich groß sind.</li>
+            <li>Beim Überfahren der Balken mit der Maus werden zusätzlich die absoluten Fallzahlen angezeigt. So lässt sich besser einschätzen, wie belastbar ein auffälliger Prozentwert wirklich ist.</li>
+            <li>Besonders kleine Gruppen, zum Beispiel einzelne Alters- oder Statuskategorien, können schnell sehr hohe oder sehr niedrige Prozentwerte erzeugen. Solche Ergebnisse sollten daher eher vorsichtig gelesen werden.</li>
+            <li>Die Auswertung eignet sich vor allem dazu, erste Tendenzen und mögliche Zusammenhänge in den Antworten sichtbar zu machen, nicht unbedingt für allgemeingültige Aussagen.</li>
+          </ul>
+        </div>
       </div>
-    </details>
+    </div>
 
     <div class="panel chart-card">
       <h2 id="chartTitle">Alter und bezahlte Mediennutzung</h2>
@@ -305,13 +326,28 @@
       }
     }
 
-    const savedTheme = localStorage.getItem('themeMode') || 'light';
-    applyTheme(savedTheme);
+    applyTheme('light');
 
     themeToggle.addEventListener('click', () => {
       const nextTheme = document.body.classList.contains('dark') ? 'light' : 'dark';
-      localStorage.setItem('themeMode', nextTheme);
       applyTheme(nextTheme);
+    });
+
+    const infoToggle = document.getElementById('infoToggle');
+    const infoContent = document.getElementById('infoContent');
+
+    infoToggle.addEventListener('click', () => {
+      const isOpen = infoToggle.classList.contains('active');
+
+      if (isOpen) {
+        infoToggle.classList.remove('active');
+        infoToggle.setAttribute('aria-expanded', 'false');
+        infoContent.style.maxHeight = '0px';
+      } else {
+        infoToggle.classList.add('active');
+        infoToggle.setAttribute('aria-expanded', 'true');
+        infoContent.style.maxHeight = infoContent.scrollHeight + 'px';
+      }
     });
 
     const COLORS = {
