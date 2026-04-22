@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Umfrage-Ergebnisse</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 24px;
+      background: #f5f5f5;
+      color: #222;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin-bottom: 8px;
+    }
+
+    p.intro {
+      margin-top: 0;
+      margin-bottom: 24px;
+      color: #555;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    .chart-wrap {
+      position: relative;
+      height: 300px;
+    }
+
+    .note {
+      margin-top: 24px;
+      background: white;
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    code {
+      background: #eee;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Ergebnisse der Umfrage</h1>
+    <p class="intro">
+      Hier werden die wichtigsten Ergebnisse der Online-Umfrage auf einen Blick dargestellt.
+    </p>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Frage 1: Beispiel</h2>
+        <div class="chart-wrap">
+          <canvas id="chart1"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Frage 2: Beispiel</h2>
+        <div class="chart-wrap">
+          <canvas id="chart2"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="note">
+      <h2>Kurzinterpretation</h2>
+      <p>
+        Hier kannst du später 3 bis 5 Sätze zu den Ergebnissen schreiben. Zum Beispiel:
+        Die meisten Teilnehmenden haben Antwort A gewählt. Antwort C war deutlich seltener.
+        Daraus lässt sich erkennen, dass ...
+      </p>
+      <p>
+        Du musst im JavaScript unten nur die <code>labels</code> und <code>data</code> durch deine echten Werte ersetzen.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // Beispiel-Daten für Diagramm 1
+    const labels1 = ['Ja', 'Nein', 'Vielleicht'];
+    const data1 = [12, 5, 8];
+
+    new Chart(document.getElementById('chart1'), {
+      type: 'bar',
+      data: {
+        labels: labels1,
+        datasets: [{
+          label: 'Anzahl Antworten',
+          data: data1,
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              precision: 0
+            }
+          }
+        }
+      }
+    });
+
+    // Beispiel-Daten für Diagramm 2
+    const labels2 = ['Sehr gut', 'Gut', 'Mittel', 'Schlecht'];
+    const data2 = [4, 10, 6, 2];
+
+    new Chart(document.getElementById('chart2'), {
+      type: 'pie',
+      data: {
+        labels: labels2,
+        datasets: [{
+          label: 'Bewertung',
+          data: data2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+  </script>
+</body>
+</html>
