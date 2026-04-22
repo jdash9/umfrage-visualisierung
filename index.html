@@ -18,6 +18,7 @@
       --no-border: rgba(220, 38, 38, 1);
       --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
       --hero-grad-top: #eef4ff;
+      --banner-bg: #f8fbff;
     }
 
     body.dark {
@@ -28,6 +29,7 @@
       --border: #374151;
       --shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
       --hero-grad-top: #111827;
+      --banner-bg: #0b1220;
     }
 
     body.dark select {
@@ -54,13 +56,14 @@
     }
 
     .container {
-      max-width: 1150px;
+      max-width: 1100px;
       margin: 0 auto;
     }
 
     .hero,
     .card,
-    .note {
+    .chart-card,
+    .banner {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 20px;
@@ -69,7 +72,15 @@
 
     .hero {
       padding: 28px;
-      margin-bottom: 22px;
+      margin-bottom: 18px;
+    }
+
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      flex-wrap: wrap;
     }
 
     h1 {
@@ -81,14 +92,26 @@
       margin: 0;
       color: var(--muted);
       line-height: 1.65;
-      max-width: 900px;
+      max-width: 860px;
+    }
+
+    .theme-button {
+      padding: 12px 16px;
+      border: none;
+      border-radius: 12px;
+      background: #111827;
+      color: white;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      white-space: nowrap;
     }
 
     .controls {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 16px;
-      margin-bottom: 22px;
+      margin-bottom: 16px;
     }
 
     .card {
@@ -118,9 +141,31 @@
       line-height: 1.5;
     }
 
+    .banner {
+      padding: 16px 18px;
+      margin-bottom: 18px;
+      background: var(--banner-bg);
+      border-left: 6px solid var(--yes-border);
+      border-radius: 16px;
+    }
+
+    .banner h2 {
+      margin: 0 0 8px 0;
+      font-size: 1.05rem;
+    }
+
+    .banner ul {
+      margin: 0;
+      padding-left: 18px;
+      line-height: 1.55;
+    }
+
+    .banner li {
+      margin-bottom: 6px;
+    }
+
     .chart-card {
       padding: 20px;
-      margin-bottom: 22px;
     }
 
     .chart-wrap {
@@ -141,21 +186,6 @@
       line-height: 1.5;
     }
 
-    .note {
-      padding: 20px;
-      line-height: 1.65;
-    }
-
-    .note ul {
-      margin-top: 10px;
-      margin-bottom: 0;
-      padding-left: 20px;
-    }
-
-    .note li {
-      margin-bottom: 8px;
-    }
-
     .small {
       color: var(--muted);
       font-size: 0.92rem;
@@ -167,7 +197,7 @@
 <body>
   <div class="container">
     <div class="hero">
-      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+      <div class="hero-top">
         <div>
           <h1>Zusammenhänge in der Umfrage zur Mediennutzung</h1>
           <p class="intro">
@@ -175,7 +205,7 @@
             Die Diagramme zeigen Prozentwerte innerhalb der jeweiligen Gruppen, damit die Verteilungen besser vergleichbar sind.
           </p>
         </div>
-        <button id="themeToggle" type="button" style="padding:12px 16px; border:none; border-radius:12px; background:#111827; color:white; font-size:0.95rem; cursor:pointer; box-shadow: var(--shadow);">
+        <button id="themeToggle" class="theme-button" type="button">
           Dark Mode
         </button>
       </div>
@@ -210,7 +240,17 @@
       </div>
     </div>
 
-    <div class="card chart-card">
+    <div class="banner">
+      <h2>Wichtige Hinweise zur Auswertung</h2>
+      <ul>
+        <li>Die Darstellung zeigt Prozentwerte innerhalb der jeweils ausgewählten Gruppen. Dadurch lassen sich Unterschiede zwischen diesen besser vergleichen, auch wenn sie unterschiedlich groß sind.</li>
+        <li>Beim Überfahren der Balken mit der Maus werden zusätzlich die absoluten Fallzahlen angezeigt. So lässt sich besser einschätzen, wie belastbar ein auffälliger Prozentwert wirklich ist.</li>
+        <li>Besonders kleine Gruppen, zum Beispiel einzelne Alters- oder Statuskategorien, können schnell sehr hohe oder sehr niedrige Prozentwerte erzeugen. Solche Ergebnisse sollten daher eher vorsichtig gelesen werden.</li>
+        <li>Die Auswertung eignet sich vor allem dazu, erste Tendenzen und mögliche Zusammenhänge in den Antworten sichtbar zu machen, nicht unbedingt für allgemeingültige Aussagen.</li>
+      </ul>
+    </div>
+
+    <div class="chart-card">
       <h2 id="chartTitle">Alter und bezahlte Mediennutzung</h2>
       <p class="subtitle" id="chartSubtitle">
         Prozentualer Vergleich danach, ob für Mediennutzung bezahlt wird.
@@ -221,16 +261,6 @@
       <p class="small" id="chartHint">
         Berücksichtigt wurden nur Personen, die beide betroffenen Fragen beantwortet haben.
       </p>
-    </div>
-
-    <div class="note">
-      <h2>Hinweise zur Interpretation</h2>
-      <ul>
-        <li>Die Darstellung zeigt Prozentwerte innerhalb der jeweils ausgewählten Gruppen. Dadurch lassen sich Unterschiede zwischen den Gruppen besser vergleichen, auch wenn die Gruppen unterschiedlich groß sind.</li>
-        <li>Beim Überfahren der Balken mit der Maus werden zusätzlich die absoluten Fallzahlen angezeigt. So lässt sich besser einschätzen, wie belastbar ein auffälliger Prozentwert wirklich ist.</li>
-        <li>Besonders kleine Gruppen, zum Beispiel einzelne Alters- oder Statuskategorien, können schnell sehr hohe oder sehr niedrige Prozentwerte erzeugen. Solche Ergebnisse sollten daher eher vorsichtig gelesen werden.</li>
-        <li>Die Auswertung eignet sich vor allem dazu, erste Tendenzen und mögliche Zusammenhänge in den Antworten sichtbar zu machen, nicht unbedingt für allgemeingültige Aussagen.</li>
-      </ul>
     </div>
   </div>
 
@@ -259,7 +289,6 @@
       localStorage.setItem('themeMode', nextTheme);
       applyTheme(nextTheme);
     });
-
 
     const COLORS = {
       yesBg: 'rgba(59, 130, 246, 0.82)',
@@ -462,9 +491,6 @@
                 const count = datasetIndex === 0 ? selected.yesCount[dataIndex] : selected.noCount[dataIndex];
                 const total = selected.yesCount[dataIndex] + selected.noCount[dataIndex];
                 return `${context.dataset.label}: ${context.parsed.y}% (${count} von ${total})`;
-              },
-              afterLabel: function(context) {
-                return '';
               }
             }
           }
