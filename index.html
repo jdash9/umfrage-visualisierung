@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Umfrage zur Mediennutzung</title>
+  <title>Zusammenhänge in der Umfrage zur Mediennutzung</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
@@ -15,7 +15,7 @@
     }
 
     .container {
-      max-width: 1100px;
+      max-width: 1200px;
       margin: 0 auto;
     }
 
@@ -27,12 +27,12 @@
       margin-top: 0;
       margin-bottom: 24px;
       color: #555;
-      line-height: 1.5;
+      line-height: 1.6;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
       gap: 20px;
     }
 
@@ -45,7 +45,7 @@
 
     .chart-wrap {
       position: relative;
-      height: 320px;
+      height: 340px;
     }
 
     .note {
@@ -62,83 +62,115 @@
       margin-top: 0;
     }
 
+    p {
+      margin-bottom: 12px;
+    }
+
     ul {
       padding-left: 20px;
+      margin-bottom: 0;
     }
 
     li {
       margin-bottom: 8px;
     }
+
+    .small {
+      color: #666;
+      font-size: 0.95rem;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Ergebnisse der Umfrage zur Mediennutzung</h1>
+    <h1>Zusammenhänge in der Umfrage zur Mediennutzung</h1>
     <p class="intro">
-      Diese Website zeigt ausgewählte Ergebnisse einer Umfrage zur Mediennutzung.
-      Dargestellt werden einige zentrale Merkmale der Teilnehmenden sowie ihr Umgang mit Medien.
+      Diese Auswertung zeigt nicht nur einzelne Ergebnisse, sondern vergleicht verschiedene Merkmale miteinander.
+      So lassen sich mögliche Zusammenhänge in den Antworten besser erkennen.
+      Die Diagramme beziehen sich jeweils nur auf Personen, die beide betroffenen Fragen beantwortet haben.
     </p>
 
     <div class="grid">
       <div class="card">
-        <h2>Geschlecht der Teilnehmenden</h2>
+        <h2>Alter und bezahlte Mediennutzung</h2>
         <div class="chart-wrap">
           <canvas id="chart1"></canvas>
         </div>
+        <p class="small">
+          Vergleich der Altersgruppen danach, ob für Mediennutzung bezahlt wird.
+        </p>
       </div>
 
       <div class="card">
-        <h2>Bezahlen für Mediennutzung</h2>
+        <h2>Geschlecht und bezahlte Mediennutzung</h2>
         <div class="chart-wrap">
           <canvas id="chart2"></canvas>
         </div>
+        <p class="small">
+          Vergleich der Geschlechter danach, ob für Mediennutzung bezahlt wird.
+        </p>
       </div>
 
       <div class="card">
-        <h2>Welchen Medien wird am meisten vertraut?</h2>
+        <h2>Alter und gefühlte Medienabhängigkeit</h2>
         <div class="chart-wrap">
           <canvas id="chart3"></canvas>
         </div>
+        <p class="small">
+          Vergleich der Altersgruppen danach, ob die eigene Mediennutzung als abhängig wahrgenommen wird.
+        </p>
       </div>
     </div>
 
     <div class="note">
       <h2>Kurzinterpretation</h2>
       <p>
-        Die Auswertung zeigt, dass unter den beantworteten Angaben mehr männliche als weibliche Teilnehmende vertreten sind.
-        Beim Thema bezahlte Mediennutzung ist das Bild vergleichsweise ausgeglichen, wobei kostenpflichtige Medien leicht häufiger genannt wurden.
-        Beim Vertrauen in Medien wurden besonders soziale Medien, Zeitungen und TV-Medien genannt.
+        Im ersten Diagramm zeigt sich, dass in der Altersgruppe von 18 bis 24 Jahren mehr Personen keine bezahlten Medien nutzen,
+        während in der Gruppe von 25 bis 34 Jahren eher mehr Personen dafür bezahlen.
+        Das deutet auf einen möglichen Zusammenhang zwischen Alter und Zahlungsbereitschaft hin.
       </p>
       <p>
-        Auffällig ist außerdem, dass nicht alle Fragen von allen Personen beantwortet wurden.
-        Deshalb beziehen sich die Diagramme jeweils nur auf die vorhandenen Antworten in der Tabelle.
+        Beim Vergleich von Geschlecht und bezahlter Mediennutzung ist zu erkennen, dass männliche Teilnehmende in dieser Stichprobe etwas häufiger
+        für Medien bezahlen als weibliche Teilnehmende.
+        Gleichzeitig ist der Unterschied nicht extrem groß und sollte daher vorsichtig interpretiert werden.
+      </p>
+      <p>
+        Im dritten Diagramm fällt auf, dass sich besonders in der Gruppe von 18 bis 24 Jahren vergleichsweise viele Personen
+        als abhängig von Medien einschätzen.
+        In der Gruppe von 25 bis 34 Jahren überwiegen dagegen die Antworten, die keine Abhängigkeit sehen.
+      </p>
+      <p>
+        Insgesamt lassen sich also erste Tendenzen erkennen.
+        Wegen der teilweise kleinen Fallzahlen und fehlenden Antworten sind die Ergebnisse jedoch eher als Hinweis
+        und nicht als allgemeingültiger Beweis zu verstehen.
       </p>
     </div>
   </div>
 
   <script>
-    // Diagramm 1: Geschlecht
-    const labels1 = ['männlich', 'weiblich'];
-    const data1 = [30, 14];
+    // Diagramm 1: Alter x bezahlt für Medien
+    const ageLabels1 = ['18 - 24', '25 - 34', 'unter 18', '35 - 44', '55 - 64', 'keine Angabe'];
 
     new Chart(document.getElementById('chart1'), {
       type: 'bar',
       data: {
-        labels: labels1,
-        datasets: [{
-          label: 'Anzahl Antworten',
-          data: data1,
-          borderWidth: 1
-        }]
+        labels: ageLabels1,
+        datasets: [
+          {
+            label: 'Ja',
+            data: [9, 11, 1, 0, 3, 0],
+            borderWidth: 1
+          },
+          {
+            label: 'Nein',
+            data: [13, 5, 1, 1, 0, 1],
+            borderWidth: 1
+          }
+        ]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false
-          }
-        },
         scales: {
           y: {
             beginAtZero: true,
@@ -150,47 +182,63 @@
       }
     });
 
-    // Diagramm 2: Bezahlt man für Medien?
-    const labels2 = ['Ja', 'Nein'];
-    const data2 = [24, 21];
+    // Diagramm 2: Geschlecht x bezahlt für Medien
+    const genderLabels = ['männlich', 'weiblich', 'keine Angabe'];
 
     new Chart(document.getElementById('chart2'), {
-      type: 'pie',
-      data: {
-        labels: labels2,
-        datasets: [{
-          label: 'Bezahlte Mediennutzung',
-          data: data2
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false
-      }
-    });
-
-    // Diagramm 3: Vertrauen in Medien
-    const labels3 = ['Soziale Medien', 'Zeitung', 'TV Medien', 'Radio', 'Sonstige Einzelantworten'];
-    const data3 = [14, 11, 8, 3, 7];
-
-    new Chart(document.getElementById('chart3'), {
       type: 'bar',
       data: {
-        labels: labels3,
-        datasets: [{
-          label: 'Anzahl Antworten',
-          data: data3,
-          borderWidth: 1
-        }]
+        labels: genderLabels,
+        datasets: [
+          {
+            label: 'Ja',
+            data: [18, 6, 0],
+            borderWidth: 1
+          },
+          {
+            label: 'Nein',
+            data: [12, 8, 1],
+            borderWidth: 1
+          }
+        ]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              precision: 0
+            }
           }
-        },
+        }
+      }
+    });
+
+    // Diagramm 3: Alter x gefühlte Abhängigkeit
+    const ageLabels3 = ['18 - 24', '25 - 34', 'unter 18', '35 - 44', '55 - 64', 'keine Angabe'];
+
+    new Chart(document.getElementById('chart3'), {
+      type: 'bar',
+      data: {
+        labels: ageLabels3,
+        datasets: [
+          {
+            label: 'Ja',
+            data: [11, 4, 1, 1, 0, 0],
+            borderWidth: 1
+          },
+          {
+            label: 'Nein',
+            data: [11, 12, 1, 0, 3, 1],
+            borderWidth: 1
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
         scales: {
           y: {
             beginAtZero: true,
