@@ -169,6 +169,414 @@
         <select id="targetSelect">
           <option value="pay" selected>Bezahlte Mediennutzung</option>
           <option value="dependency">Gefühlte Medienabhängigkeit</option>
+          <option value="ai">KI-Inhalte bewusst konsumieren</option>
+          <option value="hobby">Hobby beeinflusst Medienkonsum</option>
+          <option value="work">Medien beruflich nutzen</option>
+          <option value="communication">Direkte Kommunikation leidet</option>
+        </select>
+        <p class="helper">
+          Hier wählst du aus, welche Ja/Nein-Frage mit der festen Vergleichsgröße kombiniert werden soll.
+        </p>
+      </div>
+    </div>
+
+    <div class="card chart-card">
+      <h2 id="chartTitle">Alter und bezahlte Mediennutzung</h2>
+      <p class="subtitle" id="chartSubtitle">
+        Prozentualer Vergleich danach, ob für Mediennutzung bezahlt wird.
+      </p>
+      <div class="chart-wrap">
+        <canvas id="comparisonChart"></canvas>
+      </div>
+      <p class="small" id="chartHint">
+        Berücksichtigt wurden nur Personen, die beide betroffenen Fragen beantwortet haben.
+      </p>
+    </div>
+
+    <div class="note">
+      <h2>Was man hier gut erkennen kann</h2>
+      <ul>
+        <li>Mit der festen Auswahl <strong>Alter</strong> sieht man schnell, wie sich Antworten je Altersgruppe verteilen.</li>
+        <li>Mit <strong>Geschlecht</strong> lässt sich prüfen, ob sich männliche und weibliche Teilnehmende in ihren Antworten unterscheiden.</li>
+        <li>Durch die Prozentdarstellung sind Gruppen mit unterschiedlich vielen Personen besser vergleichbar.</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    const COLORS = {
+      yesBg: 'rgba(59, 130, 246, 0.82)',
+      yesBorder: 'rgba(59, 130, 246, 1)',
+      noBg: 'rgba(16, 185, 129, 0.82)',
+      noBorder: 'rgba(16, 185, 129, 1)'
+    };
+
+    const variableLabels = {
+      age: 'Alter',
+      gender: 'Geschlecht',
+      pay: 'bezahlte Mediennutzung',
+      dependency: 'gefühlte Medienabhängigkeit',
+      ai: 'bewusster Konsum von KI-Inhalten',
+      hobby: 'Einfluss des Hobbys auf den Medienkonsum',
+      work: 'berufliche Mediennutzung',
+      communication: 'Beeinträchtigung der direkten Kommunikation'
+    };
+
+    const dataSets = {
+      age_pay: {
+        labels: ['18–24', '25–34', 'unter 18', '35–44', '55–64', 'keine Angabe'],
+        yes: [40.9, 68.8, 50.0, 0.0, 100.0, 0.0],
+        no: [59.1, 31.2, 50.0, 100.0, 0.0, 100.0],
+        title: 'Alter und bezahlte Mediennutzung',
+        subtitle: 'Prozentualer Vergleich danach, ob für Mediennutzung bezahlt wird.'
+      },
+      age_dependency: {
+        labels: ['18–24', '25–34', 'unter 18', '35–44', '55–64', 'keine Angabe'],
+        yes: [50.0, 25.0, 50.0, 100.0, 0.0, 0.0],
+        no: [50.0, 75.0, 50.0, 0.0, 100.0, 100.0],
+        title: 'Alter und gefühlte Medienabhängigkeit',
+        subtitle: 'Prozentualer Vergleich danach, ob die eigene Mediennutzung als abhängig wahrgenommen wird.'
+      },
+      age_ai: {
+        labels: ['18–24', '25–34', 'unter 18', '35–44', '55–64', 'keine Angabe'],
+        yes: [42.1, 30.8, 100.0, 0.0, 33.3, 0.0],
+        no: [57.9, 69.2, 0.0, 100.0, 66.7, 100.0],
+        title: 'Alter und bewusster Konsum von KI-Inhalten',
+        subtitle: 'Prozentualer Vergleich danach, ob KI-generierte Inhalte bewusst konsumiert werden.'
+      },
+      age_hobby: {
+        labels: ['18–24', '25–34', 'unter 18', '35–44', '55–64', 'keine Angabe'],
+        yes: [59.1, 50.0, 100.0, 0.0, 33.3, 100.0],
+        no: [40.9, 50.0, 0.0, 100.0, 66.7, 0.0],
+        title: 'Alter und Einfluss des Hobbys auf den Medienkonsum',
+        subtitle: 'Prozentualer Vergleich danach, ob das Hobby den Medienkonsum beeinflusst.'
+      },
+      age_work: {
+        labels: ['18–24', '25–34', 'unter 18', '35–44', '55–64', 'keine Angabe'],
+        yes: [45.5, 46.7, 50.0, 100.0, 66.7, 100.0],
+        no: [54.5, 53.3, 50.0, 0.0, 33.3, 0.0],
+        title: 'Alter und berufliche Mediennutzung',
+        subtitle: 'Prozentualer Vergleich danach, ob Medien auch beruflich genutzt werden.'
+      },
+      age_communication: {
+        labels: ['18–24', '25–34', 'unter 18', '35–44', '55–64', 'keine Angabe'],
+        yes: [18.2, 50.0, 0.0, 100.0, 33.3, 0.0],
+        no: [81.8, 50.0, 100.0, 0.0, 66.7, 100.0],
+        title: 'Alter und Beeinträchtigung der direkten Kommunikation',
+        subtitle: 'Prozentualer Vergleich danach, ob die direkte Kommunikation unter der Mediennutzung leidet.'
+      },
+      gender_pay: {
+        labels: ['männlich', 'weiblich', 'keine Angabe'],
+        yes: [60.0, 42.9, 0.0],
+        no: [40.0, 57.1, 100.0],
+        title: 'Geschlecht und bezahlte Mediennutzung',
+        subtitle: 'Prozentualer Vergleich danach, ob für Mediennutzung bezahlt wird.'
+      },
+      gender_dependency: {
+        labels: ['männlich', 'weiblich', 'keine Angabe'],
+        yes: [46.7, 21.4, 0.0],
+        no: [53.3, 78.6, 100.0],
+        title: 'Geschlecht und gefühlte Medienabhängigkeit',
+        subtitle: 'Prozentualer Vergleich danach, ob die eigene Mediennutzung als abhängig wahrgenommen wird.'
+      },
+      gender_ai: {
+        labels: ['männlich', 'weiblich', 'keine Angabe'],
+        yes: [48.1, 18.2, 0.0],
+        no: [51.9, 81.8, 100.0],
+        title: 'Geschlecht und bewusster Konsum von KI-Inhalten',
+        subtitle: 'Prozentualer Vergleich danach, ob KI-generierte Inhalte bewusst konsumiert werden.'
+      },
+      gender_hobby: {
+        labels: ['männlich', 'weiblich', 'keine Angabe'],
+        yes: [63.3, 35.7, 100.0],
+        no: [36.7, 64.3, 0.0],
+        title: 'Geschlecht und Einfluss des Hobbys auf den Medienkonsum',
+        subtitle: 'Prozentualer Vergleich danach, ob das Hobby den Medienkonsum beeinflusst.'
+      },
+      gender_work: {
+        labels: ['männlich', 'weiblich', 'keine Angabe'],
+        yes: [43.3, 61.5, 100.0],
+        no: [56.7, 38.5, 0.0],
+        title: 'Geschlecht und berufliche Mediennutzung',
+        subtitle: 'Prozentualer Vergleich danach, ob Medien auch beruflich genutzt werden.'
+      },
+      gender_communication: {
+        labels: ['männlich', 'weiblich', 'keine Angabe'],
+        yes: [26.7, 42.9, 0.0],
+        no: [73.3, 57.1, 100.0],
+        title: 'Geschlecht und Beeinträchtigung der direkten Kommunikation',
+        subtitle: 'Prozentualer Vergleich danach, ob die direkte Kommunikation unter der Mediennutzung leidet.'
+      }
+    };
+
+    const baseSelect = document.getElementById('baseSelect');
+    const targetSelect = document.getElementById('targetSelect');
+    const chartTitle = document.getElementById('chartTitle');
+    const chartSubtitle = document.getElementById('chartSubtitle');
+
+    const ctx = document.getElementById('comparisonChart');
+
+    let comparisonChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: [],
+        datasets: []
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top'
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return context.dataset.label + ': ' + context.parsed.y + '%';
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            stacked: true,
+            ticks: {
+              maxRotation: 0,
+              minRotation: 0
+            }
+          },
+          y: {
+            stacked: true,
+            beginAtZero: true,
+            max: 100,
+            ticks: {
+              callback: function(value) {
+                return value + '%';
+              }
+            }
+          }
+        }
+      }
+    });
+
+    function updateChart() {
+      const key = `${baseSelect.value}_${targetSelect.value}`;
+      const selected = dataSets[key];
+
+      chartTitle.textContent = selected.title;
+      chartSubtitle.textContent = selected.subtitle;
+
+      comparisonChart.data.labels = selected.labels;
+      comparisonChart.data.datasets = [
+        {
+          label: 'Ja (%)',
+          data: selected.yes,
+          backgroundColor: COLORS.yesBg,
+          borderColor: COLORS.yesBorder,
+          borderWidth: 1,
+          borderRadius: 6
+        },
+        {
+          label: 'Nein (%)',
+          data: selected.no,
+          backgroundColor: COLORS.noBg,
+          borderColor: COLORS.noBorder,
+          borderWidth: 1,
+          borderRadius: 6
+        }
+      ];
+
+      comparisonChart.update();
+    }
+
+    function syncOptions() {
+      if (baseSelect.value === 'gender' && targetSelect.value === 'gender') {
+        targetSelect.value = 'pay';
+      }
+    }
+
+    baseSelect.addEventListener('change', () => {
+      syncOptions();
+      updateChart();
+    });
+
+    targetSelect.addEventListener('change', updateChart);
+
+    updateChart();
+  </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zusammenhänge in der Umfrage zur Mediennutzung</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --primary: rgba(59, 130, 246, 0.85);
+      --primary-border: rgba(59, 130, 246, 1);
+      --secondary: rgba(16, 185, 129, 0.82);
+      --secondary-border: rgba(16, 185, 129, 1);
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 24px;
+      background: linear-gradient(180deg, #eef4ff 0%, var(--bg) 100%);
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 1150px;
+      margin: 0 auto;
+    }
+
+    .hero,
+    .card,
+    .note {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      padding: 28px;
+      margin-bottom: 22px;
+    }
+
+    h1 {
+      margin: 0 0 10px 0;
+      font-size: 2rem;
+    }
+
+    .intro {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.65;
+      max-width: 900px;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .card {
+      padding: 18px;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    select {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #fff;
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    .helper {
+      margin-top: 10px;
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .chart-card {
+      padding: 20px;
+      margin-bottom: 22px;
+    }
+
+    .chart-wrap {
+      position: relative;
+      height: 430px;
+    }
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 8px;
+      font-size: 1.25rem;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-top: 0;
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+
+    .note {
+      padding: 20px;
+      line-height: 1.65;
+    }
+
+    .note ul {
+      margin-top: 10px;
+      margin-bottom: 0;
+      padding-left: 20px;
+    }
+
+    .note li {
+      margin-bottom: 8px;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-top: 14px;
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="hero">
+      <h1>Zusammenhänge in der Umfrage zur Mediennutzung</h1>
+      <p class="intro">
+        Hier kannst du ein Merkmal fest auswählen und es mit einem anderen vergleichen. Dadurch wird die Auswertung flexibler und man erkennt schneller mögliche Muster in den Antworten.
+        Die Diagramme zeigen Prozentwerte innerhalb der jeweiligen Gruppen, damit die Verteilungen besser vergleichbar sind.
+      </p>
+    </div>
+
+    <div class="controls">
+      <div class="card">
+        <label for="baseSelect">Feste Vergleichsgröße</label>
+        <select id="baseSelect">
+          <option value="age" selected>Alter</option>
+          <option value="gender">Geschlecht</option>
+        </select>
+        <p class="helper">
+          Dieses Merkmal bleibt auf der x-Achse stehen und bildet die Gruppen.
+        </p>
+      </div>
+
+      <div class="card">
+        <label for="targetSelect">Vergleichen mit</label>
+        <select id="targetSelect">
+          <option value="pay" selected>Bezahlte Mediennutzung</option>
+          <option value="dependency">Gefühlte Medienabhängigkeit</option>
         </select>
         <p class="helper">
           Hier wählst du aus, welche Ja/Nein-Frage mit der festen Vergleichsgröße kombiniert werden soll.
